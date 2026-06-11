@@ -1,0 +1,161 @@
+<!-- templates/books/book_form.html 添加图书表单页 -->
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block title %}Add book - ChenLib{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <div class="form-header">
+            <h1><i class="fas fa-plus-circle"></i> Add New Book</h1>
+            <p>Fill in the book information to share with readers</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="book-form">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+            <div class="form-errors">
+                {% for error in form.non_field_errors %}
+                <div class="error-message"><i class="fas fa-exclamation-triangle"></i> {{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="form-grid">
+                <!-- 左列 -->
+                <div class="form-column">
+                    <div class="form-group">
+                        <label for="{{ form.title.id_for_label }}">
+                            Title <span class="required">*</span>
+                        </label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                        <div class="field-error">{{ form.title.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.subtitle.id_for_label }}">Subtitle</label>
+                        {{ form.subtitle }}
+                        {% if form.subtitle.errors %}
+                        <div class="field-error">{{ form.subtitle.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.isbn.id_for_label }}">ISBN</label>
+                        {{ form.isbn }}
+                        {% if form.isbn.errors %}
+                        <div class="field-error">{{ form.isbn.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="{{ form.price.id_for_label }}">
+                                Price <span class="required">*</span>
+                            </label>
+                            {{ form.price }}
+                            {% if form.price.errors %}
+                            <div class="field-error">{{ form.price.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group half">
+                            <label for="{{ form.pages.id_for_label }}">
+                                Pages <span class="required">*</span>
+                            </label>
+                            {{ form.pages }}
+                            {% if form.pages.errors %}
+                            <div class="field-error">{{ form.pages.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.publication_date.id_for_label }}">Publication date</label>
+                        {{ form.publication_date }}
+                        {% if form.publication_date.errors %}
+                        <div class="field-error">{{ form.publication_date.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- 右列 -->
+                <div class="form-column">
+                    <div class="form-group">
+                        <label for="{{ form.category.id_for_label }}">Category</label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                        <div class="field-error">{{ form.category.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_author_name">Author</label>
+                        {{ form.author_name }}
+                        <small class="form-hint">Enter author name (or leave empty for anonymous.)</small>
+                        {% if form.author_name.errors %}
+                        <div class="field-error">{{ form.author_name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.language.id_for_label }}">Language</label>
+                        {{ form.language }}
+                        {% if form.language.errors %}
+                        <div class="field-error">{{ form.language.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.tags.id_for_label }}">Tags(Multiple choices available)</label>
+                        {{ form.tags }}
+                        <small class="form-hint">Hold down Ctrl to select multiple</small><!--按住Ctrl选择多个-->
+                        {% if form.tags.errors %}
+                        <div class="field-error">{{ form.tags.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        {{ form.is_bestseller }}
+                        <label for="{{ form.is_bestseller.id_for_label }}">Marked as a bestseller</label>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        {{ form.is_in_stock }}
+                        <label for="{{ form.is_in_stock.id_for_label }}">In stock</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="{{ form.description.id_for_label }}">Book introduction</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <div class="field-error">{{ form.description.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group full-width">
+                <label for="{{ form.cover_image.id_for_label }}">Cover image</label>
+                {{ form.cover_image }}
+                {% if form.cover_image.errors %}
+                <div class="field-error">{{ form.cover_image.errors.0 }}</div>
+                {% endif %}
+                <small class="form-hint">Supported formats:jpg, png, gif</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-large">
+                    <i class="fas fa-save"></i> Submit a book
+                </button>
+                <a href="{% url 'books:book_list' %}" class="btn btn-secondary btn-large">
+                    <i class="fas fa-times"></i> cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

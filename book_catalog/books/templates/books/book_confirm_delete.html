@@ -1,0 +1,32 @@
+<!-- templates/books/book_confirm_delete.html 删除确认页 -->
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block title %}Delete confirmation - ChenLib{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="delete-container">
+        <div class="delete-card">
+            <div class="delete-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2>Confirm Deletion</h2>
+            <p>Are you sure you want to delete <strong>"{{ book.title }}"</strong> ?</p>
+            <p class="delete-warning">This action cannot be undone!</p>
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="delete-actions">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Confirm Delete
+                    </button>
+                    <a href="{% url 'books:book_detail' book.id %}" class="btn btn-secondary">
+                        <i class="fas fa-ban"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

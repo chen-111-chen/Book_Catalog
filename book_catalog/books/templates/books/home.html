@@ -1,0 +1,95 @@
+<!-- templates/books/home.html 首页 -->
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block title %}home - ChenLib{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container hero-content">
+        <h1 class="hero-title">Explore the Endless Sea of Books</h1>
+        <p class="hero-subtitle">Discover, Collect, and Share Your Favorite Books</p>
+        <a href="{% url 'books:book_list' %}" class="btn btn-primary btn-large">
+            <i class="fas fa-search"></i> Browse Books
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    <!-- 统计卡片 -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-book"></i></div>
+            <div class="stat-number">{{ total_books }}</div>
+            <div class="stat-label">Total Books</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-tags"></i></div>
+            <div class="stat-number">{{ total_categories }}</div>
+            <div class="stat-label">Categories</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-number">{{ total_authors }}</div>
+            <div class="stat-label">Authors</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-crown"></i></div>
+            <div class="stat-number">{{ bestsellers }}</div>
+            <div class="stat-label">Bestsellers</div>
+        </div>
+    </div>
+
+    <!-- 最近添加 -->
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-clock"></i> Latest Additions</h2>
+            <a href="{% url 'books:book_list' %}" class="btn-link">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="book-grid">
+            {% for book in recent_books %}
+            <div class="book-card">
+                {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="book-cover">
+                {% else %}
+                <div class="book-cover-placeholder">
+                    <i class="fas fa-book"></i>
+                </div>
+                {% endif %}
+                <div class="book-info">
+                    <h3 class="book-title">{{ book.title }}</h3>
+                    <p class="book-author">{{ book.author|default:"anonymous" }}</p>
+                    <div class="book-meta">
+                        <span class="book-price">¥{{ book.price }}</span>
+                        {% if book.is_bestseller %}
+                        <span class="badge-hot"><i class="fas fa-fire"></i> Best-selling</span>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'books:book_detail' book.id %}" class="btn btn-sm">View details</a>
+                </div>
+            </div>
+            {% empty %}
+            <p class="empty-message">No books yet,<a href="{% url 'books:book_add' %}">Add the first book</a></p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- 热门分类 -->
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-chart-line"></i> Popular Categories</h2>
+        </div>
+        <div class="category-grid">
+            {% for category in popular_categories %}
+            <a href="{% url 'books:book_list' %}?category={{ category.id }}" class="category-card">
+                <i class="fas fa-folder-open"></i>
+                <h3>{{ category.name }}</h3>
+                <p>{{ category.books.count }} books</p>
+            </a>
+            {% empty %}
+            <p>No classified data yet</p>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

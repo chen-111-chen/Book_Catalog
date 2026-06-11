@@ -1,0 +1,67 @@
+<!-- templates/books/base.html 基础模板 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Book catalog{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- 导航栏 -->
+        <nav class="navbar">
+            <div class="container nav-container">
+                <a href="{% url 'books:home' %}" class="logo">
+                    <i class="fas fa-book-open"></i>
+                    <span>ChenLib</span>
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="{% url 'books:home' %}" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="{% url 'books:book_list' %}" class="nav-link"><i class="fas fa-book"></i> Book List</a></li>
+                    <li><a href="{% url 'books:book_add' %}" class="nav-link"><i class="fas fa-plus-circle"></i> Add Book</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- 消息提示 -->
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i>
+                {{ message }}
+                <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- 主要内容 -->
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2026 ChenLib | Explore the Ocean of Knowledge</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // 自动关闭提示消息
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.animation = 'fadeOut 0.5s ease forwards';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 3000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!-- templates/books/book_list.html 图书列表页 -->
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block title %}Book Catalog - ChenLib{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-book-open"></i> Book Catalog</h1>
+        <p class="page-subtitle">Explore Our Collection and Find Your Next Great Read</p>
+    </div>
+
+    <!-- 筛选栏 -->
+    <div class="filter-bar">
+        <div class="filter-label"><i class="fas fa-filter"></i> Filter by Category:</div>
+        <div class="filter-options">
+            <a href="{% url 'books:book_list' %}" class="filter-chip {% if not selected_category %}active{% endif %}">All</a>
+            {% for cat in categories %}
+            <a href="{% url 'books:book_list' %}?category={{ cat.id }}" 
+               class="filter-chip {% if selected_category|add:'0' == cat.id %}active{% endif %}">
+                {{ cat.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 图书网格 -->
+    <div class="book-grid">
+        {% for book in books %}
+        <div class="book-card fade-in">
+            <div class="book-card-inner">
+                {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="book-cover">
+                {% else %}
+                <div class="book-cover-placeholder">
+                    <i class="fas fa-book"></i>
+                </div>
+                {% endif %}
+                
+                <div class="book-info">
+                    <div class="book-category">
+                        <i class="fas fa-folder"></i> {{ book.category.name|default:"Unclassified" }}
+                    </div>
+                    <h3 class="book-title">{{ book.title }}</h3>
+                    <p class="book-author"><i class="fas fa-user"></i> {{ book.author.name|default:"Anonymous author" }}</p>
+                    
+                    <div class="book-tags">
+                        {% for tag in book.tags.all|slice:":3" %}
+                        <span class="tag" style="background-color: {{ tag.color }}20; color: {{ tag.color }}">
+                            #{{ tag.name }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="book-footer">
+                        <span class="book-price">¥{{ book.price }}</span>
+                        <div class="book-actions">
+                            <a href="{% url 'books:book_detail' book.id %}" class="btn-icon" title="View details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{% url 'books:book_delete' book.id %}" class="btn-icon delete" title="delete">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if book.is_bestseller %}
+                <div class="book-badge">Best-selling</div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-book-open"></i>
+            <h3>No books yet</h3>
+            <p>Click the button below to add the first book</p>
+            <a href="{% url 'books:book_add' %}" class="btn btn-primary">Add book</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

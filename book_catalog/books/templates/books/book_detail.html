@@ -1,0 +1,125 @@
+<!-- templates/books/book_detail.html 图书详情页 -->
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block title %}{{ book.title }} - ChenLib{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="detail-container">
+        <div class="detail-breadcrumb">
+            <a href="{% url 'books:home' %}">Home</a> &gt;
+            <a href="{% url 'books:book_list' %}">Book List</a> &gt;
+            <span>{{ book.title }}</span>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-grid">
+                <!-- 封面区域 -->
+                <div class="detail-cover">
+                    {% if book.cover_image %}
+                    <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+                    {% else %}
+                    <div class="detail-cover-placeholder">
+                        <i class="fas fa-book"></i>
+                        <p>{{ book.title }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- 信息区域 -->
+                <div class="detail-info">
+                    <h1 class="detail-title">{{ book.title }}</h1>
+                    {% if book.subtitle %}
+                    <h3 class="detail-subtitle">{{ book.subtitle }}</h3>
+                    {% endif %}
+                    
+                    <div class="detail-meta-grid">
+                        <div class="meta-item">
+                            <i class="fas fa-user-circle"></i>
+                            <strong>Author:</strong>
+                            <span>{{ book.author.name|default:"Not provided" }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-folder"></i>
+                            <strong>Category:</strong>
+                            <span>{{ book.category.name|default:"Uncategorized" }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-dollar-sign"></i>
+                            <strong>Price:</strong>
+                            <span class="price-highlight">¥{{ book.price }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <strong>Publication Date:</strong>
+                            <span>{{ book.publication_date }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-file-alt"></i>
+                            <strong>Pages:</strong>
+                            <span>{{ book.pages }} page</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-barcode"></i>
+                            <strong>ISBN:</strong>
+                            <span>{{ book.isbn|default:"Not provided" }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-globe"></i>
+                            <strong>Language:</strong>
+                            <span>{{ book.get_language_display }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-box"></i>
+                            <strong>Stock Status:</strong>
+                            <span class="{% if book.is_in_stock %}status-in{% else %}status-out{% endif %}">
+                                {% if book.is_in_stock %}In Stock{% else %}Out of Stock{% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 标签 -->
+                    {% if book.tags.all %}
+                    <div class="detail-tags">
+                        <strong><i class="fas fa-tags"></i> label:</strong>
+                        {% for tag in book.tags.all %}
+                        <span class="tag" style="background-color: {{ tag.color }}20; color: {{ tag.color }}">
+                            #{{ tag.name }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- 作者详情 -->
+                    {% if book.author and book.author.profile %}
+                    <div class="detail-author-section">
+                        <h4><i class="fas fa-address-card"></i> About the Author</h4>
+                        <p>{{ book.author.profile.bio|default:"No introduction" }}</p>
+                        {% if book.author.profile.birth_place %}
+                        <p><small>Place of birth:{{ book.author.profile.birth_place }}</small></p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- 简介 -->
+                    <div class="detail-description">
+                        <h4><i class="fas fa-align-left"></i> Description</h4>
+                        <p>{{ book.description|default:"No introduction information"|linebreaks }}</p>
+                    </div>
+
+                    <!-- 操作按钮 -->
+                    <div class="detail-actions">
+                        <a href="{% url 'books:book_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Return list
+                        </a>
+                        <a href="{% url 'books:book_delete' book.id %}" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Delete book
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
